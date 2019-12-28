@@ -6,9 +6,9 @@
 CSnake::CSnake(CRect r, char _c /*=' '*/):
   CFramedWindow(r, _c)
 {
-    bodySnake.push_back(new CPoint(3, 3));
-    bodySnake.push_back(new CPoint(4, 3));
-    bodySnake.push_back(new CPoint(5, 3));
+    bodySnake.emplace_back(CPoint(3, 3));
+    bodySnake.emplace_back(CPoint(4, 3));
+    bodySnake.emplace_back(CPoint(5, 3));
     foodSnake = CPoint(22, 12);
     lastChose = KEY_RIGHT;
 }
@@ -16,10 +16,10 @@ CSnake::CSnake(CRect r, char _c /*=' '*/):
 void CSnake::paint() {
     CFramedWindow::paint();
     for ( auto snake : bodySnake){
-        gotoyx(snake->y + geom.topleft.y, snake->x + geom.topleft.x);
+        gotoyx(snake.y + geom.topleft.y, snake.x + geom.topleft.x);
         printl("X");
     }
-    gotoyx(bodySnake[bodySnake.size()-1]->y + geom.topleft.y, bodySnake[bodySnake.size()-1]->x + geom.topleft.x);
+    gotoyx(bodySnake[bodySnake.size()-1].y + geom.topleft.y, bodySnake[bodySnake.size()-1].x + geom.topleft.x);
     printl("*");
     gotoyx(foodSnake.y + geom.topleft.y, foodSnake.x + geom.topleft.x);
     printl("O");
@@ -87,31 +87,32 @@ bool CSnake::handleEvent(int c)
             moveS (CPoint (-1, 0));
             return true;
     };
+    return false;
 }
 
 void CSnake::moveS(const CPoint &delta) {
-    endSnake = *bodySnake[0];
+    endSnake = bodySnake[0];
     for (unsigned int i =0; i < bodySnake.size()-1; i++){
-        bodySnake[i]->x = bodySnake[i+1]->x;
-        bodySnake[i]->y = bodySnake[i+1]->y;
+        bodySnake[i].x = bodySnake[i+1].x;
+        bodySnake[i].y = bodySnake[i+1].y;
     }
-    auto temp = bodySnake[bodySnake.size()-1];
-    *temp += delta;
-    for ( auto pieceSnake : bodySnake ){
-        if (pieceSnake->x >= geom.size.x - 1){
-            pieceSnake->x = 1;
+    auto &temp = bodySnake[bodySnake.size()-1];
+    temp += delta;
+    for ( auto &pieceSnake : bodySnake ){
+        if (pieceSnake.x >= geom.size.x - 1){
+            pieceSnake.x = 1;
             break;
         }
-        else if (pieceSnake->x < 1){
-            pieceSnake->x = geom.size.x - 2;
+        else if (pieceSnake.x < 1){
+            pieceSnake.x = geom.size.x - 2;
             break;
         }
-        else if (pieceSnake->y >= geom.size.y - 1){
-            pieceSnake->y = 1;
+        else if (pieceSnake.y >= geom.size.y - 1){
+            pieceSnake.y = 1;
             break;
         }
-        else if (pieceSnake->y < 1){
-            pieceSnake->y = geom.size.y - 2;
+        else if (pieceSnake.y < 1){
+            pieceSnake.y = geom.size.y - 2;
             break;
         }
     }
@@ -122,16 +123,17 @@ void CSnake::moveS(const CPoint &delta) {
 bool CSnake::collisionDetected() {
     for ( size_t index = 0; index < bodySnake.size(); index++ ){
         for ( size_t index1 = index + 1; index1 < bodySnake.size(); index1++ )
-            if ( *bodySnake[index] == *bodySnake[index1] ){
+            if ( bodySnake[index] == bodySnake[index1] ){
                 gameOver = true;
                 return true;
             }
     }
+    return false;
 }
 
 bool CSnake::foodFind() {
     for ( auto pieceSnake : bodySnake ){
-        if (*pieceSnake == foodSnake){
+        if (pieceSnake == foodSnake){
             generateNewPositon();
             growthSnake();
             if ( bodySnake.size() % 2 == 0 )
@@ -143,7 +145,7 @@ bool CSnake::foodFind() {
 }
 
 void CSnake::growthSnake() {
-        bodySnake.emplace(bodySnake.begin(), new CPoint(endSnake));
+        bodySnake.emplace(bodySnake.begin(), CPoint(endSnake));
 }
 
 void CSnake::generateNewPositon() {
@@ -155,9 +157,9 @@ void CSnake::reset() {
     gameOver = false;
     isRun = false;
     bodySnake.clear();
-    bodySnake.push_back(new CPoint(3, 3));
-    bodySnake.push_back(new CPoint(4, 3));
-    bodySnake.push_back(new CPoint(5, 3));
+    bodySnake.emplace_back(CPoint(3, 3));
+    bodySnake.emplace_back(CPoint(4, 3));
+    bodySnake.emplace_back(CPoint(5, 3));
     foodSnake = CPoint(22, 12);
     lastChose = KEY_RIGHT;
     level = 1;

@@ -7,9 +7,14 @@
 
 class CSnake:public CFramedWindow
 {
+    int lastChose;
+    int level = 1;
+    bool isRun = false;
+    bool gameOver = false;
+    bool isPausa = false;
 public:
     CSnake(CRect r, char _c = ' ');
-    vector<CPoint*> bodySnake;
+    vector<CPoint> bodySnake;
     CPoint foodSnake;
     CPoint endSnake;
 
@@ -23,11 +28,7 @@ public:
 
     bool collisionDetected();
     bool foodFind();
-    int lastChose;
-    int level = 1;
-    bool isRun = false;
-    bool gameOver = false;
-    bool isPausa = false;
+
 };
 
 #endif
