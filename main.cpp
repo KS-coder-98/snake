@@ -10,6 +10,5 @@ int main ()
     d.insert(new CWindow (CRect (CPoint (2, 3), CPoint (20, 10)), '#'));
     d.insert(new CSnake(CRect (CPoint (5, 5), CPoint (45, 20))));
     d.run();
-
     return 0;
 }

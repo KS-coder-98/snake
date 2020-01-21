@@ -63,9 +63,6 @@ bool CSnake::handleEvent(int c)
         case KEY_UP:
             if ( lastChose == KEY_DOWN ){
                 c = KEY_DOWN;
-//                return handleEvent(c);
-//                c =
-//todo dorbic czas
                 return false;
             }
             else{
